@@ -16,8 +16,11 @@ const store = createStore(
   // The initial state (will be populated by the initial state of our other reducers so it can be undefined)
   undefined,
   // compose simply enables us to apply several store enhancers
-  // Right now, we are only using applyMiddlware, but this could change in the future
+  // Right now, we are only using applyMiddlware, so we could omit
+  // this function, but this could change in the future
   compose(
+    // Middlware can intercept dispatched actions before they reach the reducer
+    // in order to modify it in some way
     applyMiddleware(
       // Thunk allows functions to be returned from action creators
       // so we can do things like dispatch multiple actions in a 
