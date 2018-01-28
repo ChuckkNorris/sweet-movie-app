@@ -1,6 +1,14 @@
 import React from 'react';
 import {Card, CardTitle, CardMedia} from 'material-ui';
 
+const styles = {
+  cardTitle: {
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis',
+    overflow: 'hidden'
+  }
+};
+
 class MovieCardComponent extends React.Component {
   constructor(props) {
     super(props);
@@ -18,7 +26,7 @@ class MovieCardComponent extends React.Component {
         onMouseOver={() => this.setState({isMouseOver: true})}
         onMouseLeave={() => this.setState({isMouseOver: false})}
       >
-        <CardTitle title={movie.title} />
+        <CardTitle style={styles.cardTitle} title={movie.title} />
         <CardMedia
           overlay={
             <CardTitle
