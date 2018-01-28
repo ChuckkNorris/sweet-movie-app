@@ -2,14 +2,27 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Grid, Row, Col} from 'react-bootstrap';
 import {AppBar} from 'material-ui';
+
 import {getTopMovies} from './movie-browser.actions';
+import * as movieHelpers from './movie-browser.helpers';
+import MovieCardComponent from './movie-card/movie-card.component';
+
+const getMoviesList = (moviesResponse) => {
+  return !!moviesResponse ? ([
+    ...moviesResponse.results.map(movieResult => movieHelpers.updateMoviePictureUrls(movieResult))
+  ]) : null;
+}
+
 class MovieBrowser extends React.Component {
 
   componentDidMount() {
     this.props.getTopMovies(2);
+    
   }
 
   render() {
+    const movies = getMoviesList(this.props.topMovies.response);
+
     return (
       <div>
         <AppBar title='Movie Browser' />
@@ -18,6 +31,13 @@ class MovieBrowser extends React.Component {
             <p>Search will go here</p>
           </Row>
           <Row>
+            {movies ? 
+              movies.map(movie => (
+                <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
+                  <MovieCardComponent movie={movie} />
+                </Col>
+              )) : 
+              null }
             <p>Movie list will go here</p>
           </Row>
         </Grid>
