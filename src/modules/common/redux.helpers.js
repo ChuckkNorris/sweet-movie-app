@@ -7,18 +7,52 @@ export const createReducer = (initialState = {}, actionHandlerKeyFuncs = {}) => 
   }
 };
 
-const createAction = (name, params) => {
+// Creates a basic action
+const createAction = (type, actionProps) => {
   return {
-    type: name,
-    ...params
+    type,
+    ...actionProps
   };
 }
 
-export const createAsyncAction = (name, asyncRequest, params) => {
+export const createAsyncActionCreator = (actionType, asyncRequestFn, requestParams) => {
   return (dispatch) => {
-    dispatch(createAction(`${name}_START`, params));
-    return asyncRequest(params)
-      .then(response => dispatch(createAction(`${name}_SUCCESS`, { response })))
-      .catch(error => dispatch(createAction(`${name}_ERROR`, { error })));
+    dispatch(createAction(`${actionType}_START`, {request: requestParams}));
+    // NOTE: asyncRequestFn must accept single object parameter
+    // in order to resolve param values
+    return asyncRequestFn(requestParams)
+      .then(response => {
+        response.json()
+          .then(json => dispatch(createAction(`${actionType}_SUCCESS`, { response: json })))
+          .catch(error => dispatch(createAction(`${actionType}_ERROR`, { error })));
+      });
+      
   };
+}
+
+// We're setting these based on the state of the request
+const initialAsyncState = { isLoading: false, response: null, request: null };
+
+// Generic way of handling state changes for an async request
+export const createAsyncReducer = (actionType, initialState = initialAsyncState, actionHandlerKeyFuncs = {}) => {
+  return createReducer(
+    initialAsyncState,
+    {
+      [`${actionType}_START`]: (state, action) => ({
+          ...state,
+          isLoading: true,
+          request: action.request
+      }),
+      [`${actionType}_SUCCESS`]: (state, action) => ({
+        ...state,
+        isLoading: false,
+        response: action.response
+      }),
+      [`${actionType}_ERROR`]: (state, action) => ({
+          ...state,
+          isLoading: false,
+          error: action.error
+      })
+    }
+  );
 }

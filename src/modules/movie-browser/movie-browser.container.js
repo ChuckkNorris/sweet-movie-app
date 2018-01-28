@@ -1,8 +1,14 @@
 import React from 'react';
+import {connect} from 'react-redux';
 import {Grid, Row, Col} from 'react-bootstrap';
 import {AppBar} from 'material-ui';
-
+import {getTopMovies} from './movie-browser.actions';
 class MovieBrowser extends React.Component {
+
+  componentDidMount() {
+    this.props.getTopMovies(2);
+  }
+
   render() {
     return (
       <div>
@@ -20,4 +26,9 @@ class MovieBrowser extends React.Component {
   }
 }
 
-export default MovieBrowser;
+export default connect(
+  (state) => ({
+    topMovies: state.movieBrowser.topMovies
+  }),
+  { getTopMovies }
+)(MovieBrowser);
