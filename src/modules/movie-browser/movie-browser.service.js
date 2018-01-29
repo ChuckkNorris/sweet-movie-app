@@ -1,5 +1,5 @@
 // WARNING: Don't check your actual API key into GitHub
-const MOVIE_DB_API_KEY = 'MY_API_KEY_HERE';
+import {MOVIE_DB_API_KEY} from '../../api-keys';
 const MOVIE_DB_BASE_URL = 'https://api.themoviedb.org/3';
 
 const createMovieDbUrl = (relativeUrl, queryParams) => {
@@ -11,6 +11,8 @@ const createMovieDbUrl = (relativeUrl, queryParams) => {
   return baseUrl;
 }
 
+// WARNING: Must pass parameters like this: ({param1, param2})
+// for async action creator helper to work
 export const getTopMovies = async ({page}) => {
   const fullUrl = createMovieDbUrl('/movie/top_rated', {
     page

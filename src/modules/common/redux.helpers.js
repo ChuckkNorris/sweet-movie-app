@@ -15,6 +15,7 @@ const createAction = (type, actionProps) => {
   };
 }
 
+// e.g. createAsyncActionCreator('GET_TOP_MOVIES', getTopMovies, {page: 1})
 export const createAsyncActionCreator = (actionType, asyncRequestFn, requestParams) => {
   return (dispatch) => {
     dispatch(createAction(`${actionType}_START`, {request: requestParams}));
@@ -35,14 +36,29 @@ const initialAsyncState = { isLoading: false, response: null, request: null };
 
 // Generic way of handling state changes for an async request
 export const createAsyncReducer = (actionType, initialState = initialAsyncState, actionHandlerKeyFuncs = {}) => {
+  const startReducerFn = (state, action) => 
+    actionHandlerKeyFuncs[`${actionType}_START`] || ({
+      ...state,
+      isLoading: true,
+      request: action.request
+  });
+  const successReducerFn = (state, action) => 
+    actionHandlerKeyFuncs[`${actionType}_SUCCESS`] || ({
+      ...state,
+      isLoading: false,
+      response: action.response
+  });
+  const errorReducerFn = (state, action) => 
+    actionHandlerKeyFuncs[`${actionType}_ERROR`] || ({
+      ...state,
+      isLoading: false,
+      error: action.error
+  });
+
   return createReducer(
     initialAsyncState,
     {
-      [`${actionType}_START`]: (state, action) => ({
-          ...state,
-          isLoading: true,
-          request: action.request
-      }),
+      [`${actionType}_START`]: startReducerFn,
       [`${actionType}_SUCCESS`]: (state, action) => ({
         ...state,
         isLoading: false,

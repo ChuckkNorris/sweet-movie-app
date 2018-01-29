@@ -2,16 +2,43 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Grid, Row, Col} from 'react-bootstrap';
 import {AppBar} from 'material-ui';
-
-import {getTopMovies} from './movie-browser.actions';
+// e.g. { getTopMovies, ... }
+import * as movieActions from './movie-browser.actions';
 import * as movieHelpers from './movie-browser.helpers';
-// import MovieCard from './movie-card/movie-card.component';
 import MovieList from './movie-list/movie-list.component';
 
 class MovieBrowser extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      currentPage: 1
+    };
+  }
 
   componentDidMount() {
-    this.props.getTopMovies(2);
+    this.props.getTopMovies(this.currentPage);
+    // Needs work
+    // this.initScroll();
+  }
+
+  initScroll() {
+    
+    
+    window.onscroll = () => {
+      const {topMovies} = this.props;
+      if (!topMovies.isLoading) {
+        let pageHeight = document.documentElement.scrollHeight;
+        let clientHeight = document.documentElement.clientHeight;
+        let scrollPos = window.pageYOffset;
+        let currentPosition = scrollPos + clientHeight;
+        let percentageScrolled = currentPosition / pageHeight;
+        if (percentageScrolled > .8) {
+          const nextPage = this.state.currentPage + 1;
+          this.props.getTopMovies(nextPage);
+          this.setState({currentPage: nextPage});
+        }
+      }
+    }
   }
 
   render() {
@@ -26,14 +53,6 @@ class MovieBrowser extends React.Component {
           </Row>
           <Row>
             <MovieList movies={movies} />
-            {/* {movies ? 
-              movies.map(movie => (
-                <Col key={movie.id} xs={12} sm={6} md={4} lg={3}>
-                  <MovieCardComponent movie={movie} />
-                </Col>
-              )) : 
-              null } */}
-            <p>Movie list will go here</p>
           </Row>
         </Grid>
       </div>
@@ -42,8 +61,10 @@ class MovieBrowser extends React.Component {
 }
 
 export default connect(
+  // Map nodes in our state to a properties of our component
   (state) => ({
     topMovies: state.movieBrowser.topMovies
   }),
-  { getTopMovies }
+  // Map action creators to properties of our component
+  { ...movieActions }
 )(MovieBrowser);
