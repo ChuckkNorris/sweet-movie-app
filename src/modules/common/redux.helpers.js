@@ -16,6 +16,8 @@ const createAction = (type, actionProps) => {
 }
 
 // e.g. createAsyncActionCreator('GET_TOP_MOVIES', getTopMovies, {page: 1})
+// I admit that passing the asyncRequestFn without params is not ideal, but 
+// wanted to capture the requestParams as part of the start action for logging transparency
 export const createAsyncActionCreator = (actionType, asyncRequestFn, requestParams) => {
   return (dispatch) => {
     dispatch(createAction(`${actionType}_START`, {request: requestParams}));
@@ -35,40 +37,33 @@ export const createAsyncActionCreator = (actionType, asyncRequestFn, requestPara
 const initialAsyncState = { isLoading: false, response: null, request: null };
 
 // Generic way of handling state changes for an async request
-export const createAsyncReducer = (actionType, initialState = initialAsyncState, actionHandlerKeyFuncs = {}) => {
-  const startReducerFn = (state, action) => 
-    actionHandlerKeyFuncs[`${actionType}_START`] || ({
+// Allowable async reducer overrides are: {action_type}_START, {action_type}_SUCCESS, {action_type}_ERROR
+export const createAsyncReducer = (actionType, actionHandlerKeyFuncs = {}, initialState = initialAsyncState) => {
+  const startReducerOverrideFn = actionHandlerKeyFuncs[`${actionType}_START`];
+  const startReducerFn = (state, action) => ({
       ...state,
       isLoading: true,
       request: action.request
   });
-  const successReducerFn = (state, action) => 
-    actionHandlerKeyFuncs[`${actionType}_SUCCESS`] || ({
+  const successReducerOverrideFn = actionHandlerKeyFuncs[`${actionType}_SUCCESS`];
+  const successReducerFn = successReducerOverrideFn ? successReducerOverrideFn : (state, action) => ({
       ...state,
       isLoading: false,
       response: action.response
   });
-  const errorReducerFn = (state, action) => 
-    actionHandlerKeyFuncs[`${actionType}_ERROR`] || ({
+  const errorReducerOverrideFn = actionHandlerKeyFuncs[`${actionType}_ERROR`];
+  const errorReducerFn = (state, action) => ({
       ...state,
       isLoading: false,
       error: action.error
   });
 
   return createReducer(
-    initialAsyncState,
+    initialState,
     {
       [`${actionType}_START`]: startReducerFn,
-      [`${actionType}_SUCCESS`]: (state, action) => ({
-        ...state,
-        isLoading: false,
-        response: action.response
-      }),
-      [`${actionType}_ERROR`]: (state, action) => ({
-          ...state,
-          isLoading: false,
-          error: action.error
-      })
+      [`${actionType}_SUCCESS`]: successReducerFn,
+      [`${actionType}_ERROR`]: errorReducerFn
     }
   );
 }

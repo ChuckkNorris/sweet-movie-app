@@ -2,10 +2,10 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Grid, Row, Col} from 'react-bootstrap';
 import {AppBar} from 'material-ui';
-// e.g. { getTopMovies, ... }
 import * as movieActions from './movie-browser.actions';
 import * as movieHelpers from './movie-browser.helpers';
 import MovieList from './movie-list/movie-list.component';
+import * as scrollHelpers from '../common/scroll.helpers';
 
 class MovieBrowser extends React.Component {
   constructor(props) {
@@ -13,30 +13,28 @@ class MovieBrowser extends React.Component {
     this.state = {
       currentPage: 1
     };
+    // Binds the handleScroll to this class (MovieBrowser)
+    // which provides access to MovieBrowser's props
+    this.handleScroll = this.handleScroll.bind(this);
   }
 
   componentDidMount() {
+    window.onscroll = this.handleScroll;
     this.props.getTopMovies(this.currentPage);
-    // Needs work
-    // this.initScroll();
   }
 
-  initScroll() {
-    
-    
-    window.onscroll = () => {
-      const {topMovies} = this.props;
-      if (!topMovies.isLoading) {
-        let pageHeight = document.documentElement.scrollHeight;
-        let clientHeight = document.documentElement.clientHeight;
-        let scrollPos = window.pageYOffset;
-        let currentPosition = scrollPos + clientHeight;
-        let percentageScrolled = currentPosition / pageHeight;
-        if (percentageScrolled > .8) {
-          const nextPage = this.state.currentPage + 1;
-          this.props.getTopMovies(nextPage);
-          this.setState({currentPage: nextPage});
-        }
+  componentWillUnmount() {
+    window.removeEventListener('scroll', this.handleScroll);
+  }
+
+  handleScroll() {
+    const {topMovies} = this.props;
+    if (!topMovies.isLoading) {
+      let percentageScrolled = scrollHelpers.getPercentageScrolledDown(window);
+      if (percentageScrolled > .8) {
+        const nextPage = this.state.currentPage + 1;
+        this.props.getTopMovies(nextPage);
+        this.setState({currentPage: nextPage});
       }
     }
   }
