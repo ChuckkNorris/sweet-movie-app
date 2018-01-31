@@ -6,6 +6,7 @@ import * as movieActions from './movie-browser.actions';
 import * as movieHelpers from './movie-browser.helpers';
 import MovieList from './movie-list/movie-list.component';
 import * as scrollHelpers from '../common/scroll.helpers';
+import MovieModal from './movie-modal/movie-modal.component';
 
 class MovieBrowser extends React.Component {
   constructor(props) {
@@ -15,6 +16,8 @@ class MovieBrowser extends React.Component {
     };
     // Binds the handleScroll to this class (MovieBrowser)
     // which provides access to MovieBrowser's props
+    // Note: You don't have to do this if you call a method
+    // directly from a lifecycle method
     this.handleScroll = this.handleScroll.bind(this);
   }
 
@@ -53,6 +56,7 @@ class MovieBrowser extends React.Component {
             <MovieList movies={movies} />
           </Row>
         </Grid>
+        <MovieModal />
       </div>
     );
   }

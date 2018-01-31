@@ -8,7 +8,7 @@ export const createReducer = (initialState = {}, actionHandlerKeyFuncs = {}) => 
 };
 
 // Creates a basic action
-const createAction = (type, actionProps) => {
+export const createAction = (type, actionProps) => {
   return {
     type,
     ...actionProps
@@ -34,7 +34,7 @@ export const createAsyncActionCreator = (actionType, asyncRequestFn, requestPara
 }
 
 // We're setting these based on the state of the request
-const initialAsyncState = { isLoading: false, response: null, request: null };
+const initialAsyncState = { isLoading: false, response: undefined, request: undefined };
 
 // Generic way of handling state changes for an async request
 // Allowable async reducer overrides are: {action_type}_START, {action_type}_SUCCESS, {action_type}_ERROR
