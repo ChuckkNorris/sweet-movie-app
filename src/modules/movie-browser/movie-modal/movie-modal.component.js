@@ -27,12 +27,7 @@ class MovieModalComponent extends React.Component {
         onRequestClose={closeMovieModal}
       >
         <img src={movie.backdrop_path} />
-        <RefreshIndicator
-          style={{position: 'relative', display: 'block', margin: '0 auto'}}
-          top={0}
-          left={0}
-          size={80}
-          status={loadingStatus} />
+      
         Only actions can close this dialog.
     </Dialog>
     );

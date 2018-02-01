@@ -12,12 +12,17 @@ const styles = {
     overflow: 'hidden'
   },
   cardMedia: {
-    maxHeight: 405
+    maxHeight: 394,
+    overflow: 'hidden'
   },
   card: {
-    cursor: 'pointer'
+    cursor: 'pointer',
+    height: 400,
+    overflow: 'hidden'
   }
 };
+
+
 
 class MovieCardComponent extends React.Component {
   constructor(props) {
@@ -30,6 +35,7 @@ class MovieCardComponent extends React.Component {
   
   render() {
     const {movie, openMovieModal} = this.props;
+    const hasImage = movie.poster_path;
     // The subtitle won't render if it's null
     const subtitle = this.state.isMouseOver ? movie.overview : null;
 
@@ -50,7 +56,10 @@ class MovieCardComponent extends React.Component {
             />
           }
         >
-          <img src={movie.poster_path} />
+          <img
+
+            src={movie.poster_path}
+          />
         </CardMedia>
       </Card>
     );

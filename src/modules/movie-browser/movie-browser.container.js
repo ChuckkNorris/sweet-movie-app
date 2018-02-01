@@ -31,6 +31,7 @@ class MovieBrowser extends React.Component {
   }
 
   handleScroll() {
+    console.log('handle scrolls called')
     const {topMovies} = this.props;
     if (!topMovies.isLoading) {
       let percentageScrolled = scrollHelpers.getPercentageScrolledDown(window);
@@ -43,7 +44,8 @@ class MovieBrowser extends React.Component {
   }
 
   render() {
-    const movies = movieHelpers.getMoviesList(this.props.topMovies.response);
+    const {topMovies} = this.props;
+    const movies = movieHelpers.getMoviesList(topMovies.response);
 
     return (
       <div>
@@ -53,7 +55,7 @@ class MovieBrowser extends React.Component {
             <p>Search will go here</p>
           </Row>
           <Row>
-            <MovieList movies={movies} />
+            <MovieList movies={movies} isLoading={topMovies.isLoading} />
           </Row>
         </Grid>
         <MovieModal />
