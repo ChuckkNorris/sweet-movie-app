@@ -19,10 +19,11 @@ const styles = {
     cursor: 'pointer',
     height: 400,
     overflow: 'hidden'
+  },
+  bgImage: {
+    width: '100%'
   }
 };
-
-
 
 class MovieCardComponent extends React.Component {
   constructor(props) {
@@ -46,7 +47,7 @@ class MovieCardComponent extends React.Component {
         onMouseLeave={() => this.setState({isMouseOver: false})}
         onClick= {() => openMovieModal(movie.id)}
       >
-        <CardTitle title={<div style={styles.cardTitle}>{movie.title}</div>} />
+        {/* <CardTitle title={<div style={styles.cardTitle}>{movie.title}</div>} /> */}
         <CardMedia
           style={styles.cardMedia}
           overlay={
@@ -56,10 +57,7 @@ class MovieCardComponent extends React.Component {
             />
           }
         >
-          <img
-
-            src={movie.poster_path}
-          />
+          <img style={styles.bgImage} src={movie.poster_path} />
         </CardMedia>
       </Card>
     );

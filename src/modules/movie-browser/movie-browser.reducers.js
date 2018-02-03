@@ -7,7 +7,9 @@ import movieModalReducer from './movie-modal/movie-modal.reducer';
 // movies and new pages of movies
 const moviesSuccessReducer = (state, action) => {
   const existingMovies = state.response ? state.response.results : [];
-  // We make sure to create a new state object to be returned
+  // Create a new state object to be returned
+  // When creating the new state, be sure to include any
+  // existing properties we want to persist
   return {
     ...state,
     isLoading: false,

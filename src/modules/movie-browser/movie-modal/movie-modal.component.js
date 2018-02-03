@@ -5,30 +5,52 @@ import _ from 'lodash';
 import { closeMovieModal } from './movie-modal.actions';
 import { getMovieDetails } from '../movie-browser.actions';
 import * as movieHelpers from '../movie-browser.helpers';
+import Loader from '../../common/loader.component';
+
+const styles = {
+  // Can use functions to dynamically build our CSS
+  dialogContent: (backgroundUrl) => ({
+    backgroundImage: `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(${backgroundUrl})`,
+    backgroundRepeat: 'no-repeat',
+    backgroundSize: '100%',
+    height: '100%',
+    minHeight: 400,
+    color: 'white',
+    padding: 10
+  })
+}
 
 class MovieModalComponent extends React.Component {
+  // Triggered right after a property is changed
   componentWillReceiveProps(nextProps) {
-    // If we received a new Id
+    // If we will receive a new movieId
     if (nextProps.movieId && this.props.movieId !== nextProps.movieId) {
       nextProps.getMovieDetails(nextProps.movieId);
     }
   }
 
   render() {
-    const {isOpen, closeMovieModal} = this.props;
-    const loadingStatus = this.props.isLoading ? 'loading' : 'hide';
+    const {isOpen, closeMovieModal, isLoading} = this.props;
+    const loadingStatus = isLoading ? 'loading' : 'hide';
     const movie = movieHelpers.updateMoviePictureUrls(this.props.movie);
+    const genres = (movie && movie.genres) ? movie.genres.map(genre => genre.name).join(', ') : '';
+    
 
     return (
       <Dialog
-        title={movie.title}
+        title={null}
         modal={false}
         open={isOpen}
         onRequestClose={closeMovieModal}
       >
-        <img src={movie.backdrop_path} />
-      
-        Only actions can close this dialog.
+        <Loader isLoading={isLoading}>
+          <div style={styles.dialogContent(movie.backdrop_path)}>
+            <h1>{movie.title}</h1>
+            <h5>{genres}</h5>
+            {movie.overview}
+
+          </div>
+        </Loader>
     </Dialog>
     );
   }
@@ -39,7 +61,7 @@ export default connect(
   (state) => ({
     // Using lodash get, recursively check that a property is defined
     // before try to access it - if it is undefined, it will return your default value
-    // _.get(object, 'path.to.objects[0].and.stuff', defaultValue)
+    // _.get(object, 'path.to.targets[0].neat.stuff', defaultValue)
     isOpen: _.get(state, 'movieBrowser.movieModal.isOpen', false),
     movieId: _.get(state, 'movieBrowser.movieModal.movieId'),
     movie: _.get(state, 'movieBrowser.movieDetails.response', {}),
