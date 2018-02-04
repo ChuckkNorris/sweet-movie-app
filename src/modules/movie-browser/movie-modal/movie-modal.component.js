@@ -34,7 +34,6 @@ class MovieModalComponent extends React.Component {
     const loadingStatus = isLoading ? 'loading' : 'hide';
     const movie = movieHelpers.updateMoviePictureUrls(this.props.movie);
     const genres = (movie && movie.genres) ? movie.genres.map(genre => genre.name).join(', ') : '';
-    
 
     return (
       <Dialog
@@ -47,8 +46,9 @@ class MovieModalComponent extends React.Component {
           <div style={styles.dialogContent(movie.backdrop_path)}>
             <h1>{movie.title}</h1>
             <h5>{genres}</h5>
-            {movie.overview}
-
+            <p>{movie.overview}</p>
+            <p>Popularity: {movie.popularity}</p>
+            <p>Budget: ${movie.budget}</p>
           </div>
         </Loader>
     </Dialog>

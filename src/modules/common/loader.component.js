@@ -11,7 +11,6 @@ const styles = {
 };
 
 const LoaderComponent = ({isLoading, children}) => {
-  const refreshStatus = isLoading ? 'loading' : 'hide';
   if (isLoading) {
     return (
       <RefreshIndicator
