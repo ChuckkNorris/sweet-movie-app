@@ -31,7 +31,6 @@ class MovieCardComponent extends React.Component {
   
   render() {
     const {movie, openMovieModal} = this.props;
-    const hasImage = movie.poster_path;
     // The CardTitle.subtitle won't render if it's null
     const subtitle = this.state.isMouseOver ? movie.overview : null;
 

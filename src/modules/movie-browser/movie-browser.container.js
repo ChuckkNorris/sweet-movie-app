@@ -1,18 +1,19 @@
 import React from 'react';
 import {connect} from 'react-redux';
 import {Grid, Row, Col} from 'react-bootstrap';
-import {AppBar} from 'material-ui';
+import {AppBar, TextField, RaisedButton} from 'material-ui';
 import * as movieActions from './movie-browser.actions';
 import * as movieHelpers from './movie-browser.helpers';
 import MovieList from './movie-list/movie-list.component';
 import * as scrollHelpers from '../common/scroll.helpers';
-import MovieModal from './movie-modal/movie-modal.component';
+import MovieModal from './movie-modal/movie-modal.container';
 
 class MovieBrowser extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentPage: 1
+      currentPage: 1,
+      currentMovies: []
     };
     // Binds the handleScroll to this class (MovieBrowser)
     // which provides access to MovieBrowser's props
@@ -23,7 +24,7 @@ class MovieBrowser extends React.Component {
 
   componentDidMount() {
     window.onscroll = this.handleScroll;
-    this.props.getTopMovies(this.currentPage);
+    this.props.getTopMovies(this.state.currentPage);
   }
 
   componentWillUnmount() {
@@ -31,7 +32,6 @@ class MovieBrowser extends React.Component {
   }
 
   handleScroll() {
-    console.log('handle scrolls called')
     const {topMovies} = this.props;
     if (!topMovies.isLoading) {
       let percentageScrolled = scrollHelpers.getPercentageScrolledDown(window);

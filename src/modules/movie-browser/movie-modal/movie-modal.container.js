@@ -1,6 +1,6 @@
 import React from 'react';
 import {connect} from 'react-redux';
-import { Dialog, RefreshIndicator } from 'material-ui';
+import { Dialog } from 'material-ui';
 import _ from 'lodash';
 import { closeMovieModal } from './movie-modal.actions';
 import { getMovieDetails } from '../movie-browser.actions';
@@ -20,7 +20,7 @@ const styles = {
   })
 }
 
-class MovieModalComponent extends React.Component {
+class MovieModalContainer extends React.Component {
   // Triggered right after a property is changed
   componentWillReceiveProps(nextProps) {
     // If we will receive a new movieId
@@ -37,6 +37,7 @@ class MovieModalComponent extends React.Component {
 
     return (
       <Dialog
+        autoScrollBodyContent={true}
         title={null}
         modal={false}
         open={isOpen}
@@ -67,6 +68,6 @@ export default connect(
     movie: _.get(state, 'movieBrowser.movieDetails.response', {}),
     isLoading: _.get(state, 'movieBrowser.movieDetails.isLoading', false),
   }),
-  // Map to a prop, ready to be dispatched
+  // Map an action to a prop, ready to be dispatched
   { closeMovieModal, getMovieDetails }
-)(MovieModalComponent);
+)(MovieModalContainer);
